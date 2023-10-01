@@ -34,18 +34,20 @@ At this point your machine is ready for terraforming.  Now would be a time to Sn
 If you do want to rollback in this method, make sure to delete your terraform.tfstate and any tfstate.backups in your folder so that it runs as a new build on that new snapshot.
 
 ## TERRAFORM CONFIGURATION GUIDE
+Clone this repository locally.  I recommend Visual Studio Code with the Terraform Extension installed for proper syntax verification.
 1. Copy certificate and key files to a ./Certificates directory in your project.
     - PEM file format is recommended.
     - If you are storing your directory in a public Github repository, make sure to delete these certificates after they have been imported.
 2. Modify the provider.tf with your NetScaler access information.
 3. Modify the variables.tf for your environment.
-4. Run a terraform -plan from your project directory
+4. Run a terraform -init so that the latest CitrixADC terraform provider gets installed.
+5. Run a terraform -plan from your project directory
     - It will prompt for the password for the NetScaler on every plan and apply run.
     - It will prompt for the LDAP password for the ldap service account on every plan and apply run.
-5. If the configuration looks good, run a terraform -apply.
+6. If the configuration looks good, run a terraform -apply.
     - Besides login prompts the apply will ask you to confirm that you are modifying configuration
-6. When you run the apply it will save the configuration at the end of the run.  However, if in your environment you see a configuration being deployed after the save command executes, let me know what the process was so I can modify the configuration.
-7. After your configuration is deployed, you now can setup High Availability for your NetScaler pair.  Make sure to setup the STAYPRIMARY and STAYSECONDARY on the nodes before linking them to keep the unit with the config from being overwritten with null data.
+7. When you run the apply it will save the configuration at the end of the run.  However, if in your environment you see a configuration being deployed after the save command executes, let me know what the process was so I can modify the configuration.
+8. After your configuration is deployed, you now can setup High Availability for your NetScaler pair.  Make sure to setup the STAYPRIMARY and STAYSECONDARY on the nodes before linking them to keep the unit with the config from being overwritten with null data.
 
 ## KNOWN ISSUES
 
