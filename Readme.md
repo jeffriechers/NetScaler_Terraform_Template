@@ -1,4 +1,4 @@
-# Welcome to the Jeff Riechers complete^*^ best practice NetScaler Template.  (^*^Complete is a relative term)
+# Welcome to the Jeff Riechers complete<sup>*</sup> best practice NetScaler Template.  (^*^Complete is a relative term)
 
 If you run into any issues with this template, please notify me with the error, sanitized configuration, and when it failed for you.
 
