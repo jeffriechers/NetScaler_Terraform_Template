@@ -34,7 +34,7 @@ At this point your machine is ready for terraforming.  Now would be a time to Sn
 If you do want to rollback in this method, make sure to delete your terraform.tfstate and any tfstate.backups in your folder so that it runs as a new build on that new snapshot.
 
 ## TERRAFORM CONFIGURATION GUIDE
-1. Copy certificate and key files to the ./Certificates directory.
+1. Copy certificate and key files to a ./Certificates directory in your project.
     - PEM file format is recommended.
     - If you are storing your directory in a public Github repository, make sure to delete these certificates after they have been imported.
 2. Modify the provider.tf with your NetScaler access information.
