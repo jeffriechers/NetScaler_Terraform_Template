@@ -69,3 +69,4 @@ Load Balancer Services cannot be bound with the new Order setting.  I have a tic
     - nFactor login tree for multi-authentication needed
 - Programmatically setup HA configuration.
 - Setting up GSLB SNIP to get management access for config sync
+- Create an example variables.tf for anyone questioning the requested fields
