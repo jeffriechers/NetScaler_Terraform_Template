@@ -34,7 +34,7 @@ variable "lb_services" {
 variable "lb_vservers" {
     type = list(object({
         lbmethod    = string
-        sslprofile  = string
+        sslprofile  = string #Use Secure_sslprofile to utilize the hardened profile created by terraform
         name        = string
         port        = string #If creating a non-addressable load balancer use 0 for port.
         ipv46       = string #If creating a non-addressable load balancer use 0.0.0.0 for IP.
@@ -50,7 +50,7 @@ variable "CSW_vservers" {
         name        = string
         port        = string
         servicetype = string
-        sslprofile  = string
+        sslprofile  = string #Use Secure_sslprofile to utilize the hardened profile created by terraform
     }))
     default = [
     #{ name = "", port = "", ipv46 = "", servicetype = "", sslprofile = ""},
@@ -177,7 +177,7 @@ variable "CertandKeyUpload" {
         filecontent = string
     }))
     default = [
-    #{ filename = ""},
+    #{ filename = "", filecontent =""},
     ]
 }
 variable "Certificates" {
