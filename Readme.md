@@ -52,6 +52,7 @@ Clone this repository locally.  I recommend Visual Studio Code with the Terrafor
 ## WHATS NEW
 10-3-2023
 - Variables.example has been uploaded from my test environment if you have questions as to what values would look like.
+- Added an order field for Certificate Binding to prevent collisions with SNI binding multiple certs to a single entity.
 - More Documentation added to .TF files for better clarification on format and function.
 
 ## KNOWN ISSUES
