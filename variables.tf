@@ -1,5 +1,5 @@
 variable "password" {
-    description = "Netscaler Password"
+    description = "Netscaler Login Password"
     type = string
     sensitive = true
 }
