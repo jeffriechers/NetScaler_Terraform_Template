@@ -49,11 +49,18 @@ Clone this repository locally.  I recommend Visual Studio Code with the Terrafor
 7. When you run the apply it will save the configuration at the end of the run.  However, if in your environment you see a configuration being deployed after the save command executes, let me know what the process was so I can modify the configuration.
 8. After your configuration is deployed, you now can setup High Availability for your NetScaler pair.  Make sure to setup the STAYPRIMARY and STAYSECONDARY on the nodes before linking them to keep the unit with the config from being overwritten with null data.
 
+## WHATS NEW
+10-3-2023
+- Variables.example has been uploaded from my test environment if you have questions as to what values would look like.
+- More Documentation added to .TF files for better clarification on format and function.
+
 ## KNOWN ISSUES
 
 If you do a terraform apply -destroy, the Diffie Hellman key is not removed, so you need to manually delete the file from /nsconfig/ssl/SecureDH.  You can do this via putty, winscp, or from the browser gui under Trafic Management->SSL->Manage Certificates / Keys / CSRs
 
 Load Balancer Services cannot be bound with the new Order setting.  I have a ticket open with the owner of the CitrixADC provider, and they are adding this feature.  For now you can modify the binding manually from the gui.
+
+I am seeing an issue with SOA record creation during the first time run of a terraform apply.  But running it a second time works fine.  This could be an issue with my environment, or 14.1 Build 8.
 
 ## TO DO LIST
 
@@ -69,4 +76,3 @@ Load Balancer Services cannot be bound with the new Order setting.  I have a tic
     - nFactor login tree for multi-authentication needed
 - Programmatically setup HA configuration.
 - Setting up GSLB SNIP to get management access for config sync
-- Create an example variables.tf for anyone questioning the requested fields
