@@ -172,11 +172,11 @@ variable "AuthenticationProfile" {
 }
 variable "CertandKeyUpload" {
     type = list(object({
-        filename = string
-        filecontent = string
+        filename = string # Name of the file to be created under the nsconfig/ssl directory.
+        filecontent = string # Place the name of the file to upload after the ./Certificates/ entry.
     }))
     default = [
-    #{ filename = "", filecontent =""},
+    #{ filename = "", filecontent ="./Certificates/"},
     ]
 }
 variable "Certificates" {
