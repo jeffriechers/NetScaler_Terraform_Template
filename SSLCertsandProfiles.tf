@@ -94,8 +94,8 @@ resource "citrixadc_sslcertkey" "Certificates" {
       depends_on = [ citrixadc_systemfile.CertandKeyUpload ]
 }
 resource "citrixadc_sslvserver_sslcertkey_binding" "SSLbinding" {
-    for_each = { for u in var.SSLbinding : u.vservername => u}
-      vservername = each.key
+    for_each = { for u in var.SSLbinding : u.order => u}
+      vservername = each.value.vservername
       certkeyname = each.value.certkeyname
       snicert     = each.value.snicert
       depends_on = [ citrixadc_sslcertkey.Certificates, citrixadc_lbvserver.lb_vservers, citrixadc_csvserver.CSW_vservers ]
