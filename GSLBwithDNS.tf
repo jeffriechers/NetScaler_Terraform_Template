@@ -22,6 +22,7 @@ resource "citrixadc_dnsnsrec" "RootRecord" {
     for_each = { for u in var.RootRecord : u.nameserver => u}
     domain = each.value.domain
     nameserver = each.key
+    depends_on = [ citrixadc_dnssoarec.SOA ]
 }
 
 #Zones
