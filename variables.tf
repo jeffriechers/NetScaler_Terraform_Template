@@ -153,7 +153,7 @@ variable "AAA_vservers" {
 }
 variable "AAA_User_Bind" {
     type = list(object({
-      name      = string
+      name      = string # This is the name of the Vserver the policy is bound too
       policy    = string
       priority  = string
     }))
