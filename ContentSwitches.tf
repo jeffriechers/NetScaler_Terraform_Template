@@ -17,8 +17,8 @@ resource "citrixadc_cspolicy" "CSW_cspolicy" {
 #Load Balancer bindings
 resource "citrixadc_csvserver_cspolicy_binding" "CSW_policybind" {
   for_each = { for u in var.CSW_policybind : u.name => u}
-    name = each.key
-    policyname = each.value.policyname
+    name = each.value.name
+    policyname = each.key
     priority = each.value.priority
     targetlbvserver = each.value.targetlbvserver
     depends_on = [ citrixadc_lbvserver.lb_vservers, citrixadc_csvserver.CSW_vservers ]
