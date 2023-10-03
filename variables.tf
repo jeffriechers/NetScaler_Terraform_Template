@@ -34,7 +34,7 @@ variable "lb_services" {
 variable "lb_vservers" {
     type = list(object({
         lbmethod    = string
-        sslprofile  = string #Use Secure_sslprofile to utilize the hardened profile created by terraform
+        sslprofile  = string #Use Secure_sslprofile to utilize the hardened profile created by this terraform
         name        = string
         port        = string #If creating a non-addressable load balancer use 0 for port.
         ipv46       = string #If creating a non-addressable load balancer use 0.0.0.0 for IP.
@@ -50,7 +50,7 @@ variable "CSW_vservers" {
         name        = string
         port        = string
         servicetype = string
-        sslprofile  = string #Use Secure_sslprofile to utilize the hardened profile created by terraform
+        sslprofile  = string #Use Secure_sslprofile to utilize the hardened profile created by this terraform
     }))
     default = [
     #{ name = "", port = "", ipv46 = "", servicetype = "", sslprofile = ""},
@@ -83,8 +83,7 @@ variable "Responder_Action" {
         target  = string
     }))
     default = [
-    #{ name = "", type = "", target = ""},
-    
+    #{ name = "", type = "", target = ""},    
     ]
 }
 variable "Responder_Policy" {
@@ -114,7 +113,7 @@ variable "ldap_action" {
         name       = string
         serverip   = string
         serverport = string
-        defaultauthenticationgroup = string # If you are creating a global group to login to the NetScaler "NetScaler_Admins" is pre-defined in the AAA.tf for this field.
+        defaultauthenticationgroup = string # If you are creating a global group to login to the NetScaler, "NetScaler_Admins" is pre-defined in the AAA.tf for this field.
         ldapbase = string
         ldapbinddn = string
         searchfilter = string
@@ -133,7 +132,7 @@ variable "Authentication_Policy" {
     #{ name = "", rule = "", action = ""},
     ]
 }
-variable "Global_Auth_Binding" {
+variable "Global_Auth_Binding" { # This binding is for login to NetScaler, not for logging into AAA or VPN sites.
     type = list(object({
         policyname     = string
         priority       = string
@@ -195,7 +194,7 @@ variable "SSLbinding" {
     type = list(object({
       vservername = string
       certkeyname = string
-      snicert     = string
+      snicert     = string # Either true or false
         }))
     default = [
     #{ vservername = "", certkeyname = "", snicert = ""},
