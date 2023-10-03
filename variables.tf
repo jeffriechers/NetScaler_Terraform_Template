@@ -192,12 +192,13 @@ variable "Certificates" {
 }
 variable "SSLbinding" {
     type = list(object({
+      order = string # Required to prevent name collisions with SNI Certs Just create a unique ascending number for each entry.
       vservername = string
       certkeyname = string
-      snicert     = string # Either true or false
+      snicert     = string # Must be either true or false
         }))
     default = [
-    #{ vservername = "", certkeyname = "", snicert = ""},
+    #{ order = "",vservername = "", certkeyname = "", snicert = ""},
     ]
 }
 variable "STA_bind" {
