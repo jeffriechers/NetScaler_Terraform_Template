@@ -114,7 +114,7 @@ variable "ldap_action" {
         name       = string
         serverip   = string
         serverport = string
-        defaultauthenticationgroup = string
+        defaultauthenticationgroup = string # If you are creating a global group to login to the NetScaler "NetScaler_Admins" is pre-defined in the AAA.tf for this field.
         ldapbase = string
         ldapbinddn = string
         searchfilter = string
