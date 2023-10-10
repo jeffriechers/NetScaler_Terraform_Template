@@ -53,6 +53,7 @@ Clone this repository locally.  I recommend Visual Studio Code with the Terrafor
 10-10-2023
 - Added Message Actions and Responder Policies for Blocking non-US or non-US and non-Canada public IPs for virtual servers
 - Bind Responder policy to public VIP to protect access
+
 10-3-2023
 - Variables.example has been uploaded from my test environment if you have questions as to what values would look like.
 - Added an order field for Certificate Binding to prevent collisions with SNI binding multiple certs to a single entity.
