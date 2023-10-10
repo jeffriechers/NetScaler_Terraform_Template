@@ -65,6 +65,13 @@ resource "citrixadc_icaparameter" "HA_icaparameter" {
   l7latencyfrequency   = 0
   enablesronhafailover = "YES"
 }
+resource "citrixadc_locationparameter" "NS_LocationParameter" {
+  matchwildcardtoany = "YES"
+}
+resource "citrixadc_locationfile" "NS_LocationFile" {
+  locationfile = "/var/netscaler/inbuilt_db/Citrix_Netscaler_InBuilt_GeoIP_DB_IPv4"
+  format       = "netscaler"
+}
 #Save NS Config
 resource "citrixadc_nsconfig_save" "tf_ns_save" {
     all        = true
