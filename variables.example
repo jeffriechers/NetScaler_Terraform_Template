@@ -131,6 +131,16 @@ variable "CSW_responderbinding" {
     { name = "CSW_Home_80", policyname = "HTTPS_responderpolicy", priority = "100", gotopriorityexpression = "END", bindpoint = "REQUEST"},
     ]
    }
+variable "CSW_VPNpolicybind" {
+        type = list(object({
+        name            = string
+        vserver         = string
+    }))
+    default = [
+    #{ name = "", vserver = ""},
+    { name = "External_CSW_Home_443", vserver = "VPN_GW"},
+    ]
+}
 variable "ldap_action" {
     type = list(object({
         name       = string

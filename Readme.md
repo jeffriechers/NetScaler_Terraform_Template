@@ -50,6 +50,9 @@ Clone this repository locally.  I recommend Visual Studio Code with the Terrafor
 8. After your configuration is deployed, you now can setup High Availability for your NetScaler pair.  Make sure to setup the STAYPRIMARY and STAYSECONDARY on the nodes before linking them to keep the unit with the config from being overwritten with null data.
 
 ## WHATS NEW
+10-12-2023
+- Added Content Switch Binding of NetScaler VPN Gateway
+
 10-10-2023
 - Added Message Actions and Responder Policies for Blocking non-US or non-US and non-Canada public IPs for virtual servers
 - Bind Responder policy to public VIP to protect access

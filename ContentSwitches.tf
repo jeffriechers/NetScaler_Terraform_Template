@@ -24,3 +24,10 @@ resource "citrixadc_csvserver_cspolicy_binding" "CSW_policybind" {
     targetlbvserver = each.value.targetlbvserver
     depends_on = [ citrixadc_lbvserver.lb_vservers, citrixadc_csvserver.CSW_vservers , citrixadc_cspolicy.CSW_cspolicy ]
 }
+#VPN Gateway CS bindings (Only 1 allowed per entire NetScaler)
+resource "citrixadc_csvserver_vpnvserver_binding" "CSW_VPNpolicybind" {
+    for_each = { for u in var.CSW_VPNpolicybind : u.name => u}
+    name = each.key
+    vserver = each.value.vserver
+    depends_on = [ citrixadc_vpnvserver.VPN_Vserver, citrixadc_csvserver.CSW_vservers ]
+}
