@@ -17,47 +17,47 @@
 # }
 
 resource "citrixadc_route" "StaticRoutes" {
-    for_each = { for u in var.static_routes : u.network => u}
-    network    = each.key
-    netmask    = each.value.netmask
-    gateway    = each.value.gateway
-    advertise  = "DISABLED"
+  for_each  = { for u in var.static_routes : u.network => u }
+  network   = each.key
+  netmask   = each.value.netmask
+  gateway   = each.value.gateway
+  advertise = "DISABLED"
 }
 # Netscaler Modes and Features
 resource "citrixadc_nsmode" "nsmode" {
-    fr = true
-    edge = true
-    l3 = true
-    mbf = true
-    usnip = true
-    pmtud = true
+  fr    = true
+  edge  = true
+  l3    = true
+  mbf   = true
+  usnip = true
+  pmtud = true
 }
 resource "citrixadc_nsfeature" "nsfeature" {
-    lb = true
-    cs = true
-    ssl = true
-    ic = true
-    sslvpn = true
-    aaa = true
-    rewrite = true
-    cmp = true
-    wl = true
-    appfw = true
-    responder = true
-    appflow = true
-    ch = false
-    contentaccelerator = true
-    rep = true
-    bot = true
-    gslb = true
-    rdpproxy = true
-    adaptivetcp = true
-    hdosp = true
-    feo = true
+  lb                 = true
+  cs                 = true
+  ssl                = true
+  ic                 = true
+  sslvpn             = true
+  aaa                = true
+  rewrite            = true
+  cmp                = true
+  wl                 = true
+  appfw              = true
+  responder          = true
+  appflow            = true
+  ch                 = false
+  contentaccelerator = true
+  rep                = true
+  bot                = true
+  gslb               = true
+  rdpproxy           = true
+  adaptivetcp        = true
+  hdosp              = true
+  feo                = true
 }
 #Netscaler System Configuration
 resource "citrixadc_nsvpxparam" "ESXI_vpxparam" {
-    cpuyield = "YES"
+  cpuyield = "YES"
 }
 resource "citrixadc_icaparameter" "HA_icaparameter" {
   edtpmtuddf           = "ENABLED"
@@ -74,7 +74,7 @@ resource "citrixadc_locationfile" "NS_LocationFile" {
 }
 #Save NS Config
 resource "citrixadc_nsconfig_save" "tf_ns_save" {
-    all        = true
-    timestamp = timestamp()
-    depends_on = [ citrixadc_sslcertkey.Certificates, citrixadc_lbvserver.lb_vservers, citrixadc_sslvserver_sslcertkey_binding.SSLbinding,citrixadc_gslbvserver.GSLB_vserver, citrixadc_sslvserver.vpn_sslvserver, citrixadc_csvserver.CSW_vservers ]
+  all        = true
+  timestamp  = timestamp()
+  depends_on = [citrixadc_sslcertkey.Certificates, citrixadc_lbvserver.lb_vservers, citrixadc_sslvserver_sslcertkey_binding.SSLbinding, citrixadc_gslbvserver.GSLB_vserver, citrixadc_sslvserver.vpn_sslvserver, citrixadc_csvserver.CSW_vservers]
 }

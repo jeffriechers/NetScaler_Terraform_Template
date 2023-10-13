@@ -18,7 +18,7 @@ resource "citrixadc_sslcipher" "Securesslcipher" {
     ciphername     = "TLS1.3-AES128-GCM-SHA256"
     cipherpriority = 3
   }
-    ciphersuitebinding {
+  ciphersuitebinding {
     ciphername     = "TLS1.2-ECDHE-ECDSA-AES128-GCM-SHA256"
     cipherpriority = 4
   }
@@ -30,7 +30,7 @@ resource "citrixadc_sslcipher" "Securesslcipher" {
     ciphername     = "TLS1.2-ECDHE-ECDSA-AES128-SHA256"
     cipherpriority = 6
   }
-    ciphersuitebinding {
+  ciphersuitebinding {
     ciphername     = "TLS1.2-ECDHE-ECDSA-AES256-SHA384"
     cipherpriority = 7
   }
@@ -42,7 +42,7 @@ resource "citrixadc_sslcipher" "Securesslcipher" {
     ciphername     = "TLS1.2-ECDHE-RSA-AES256-GCM-SHA384"
     cipherpriority = 9
   }
-    ciphersuitebinding {
+  ciphersuitebinding {
     ciphername     = "TLS1.2-DHE-RSA-AES128-GCM-SHA256"
     cipherpriority = 10
   }
@@ -53,50 +53,50 @@ resource "citrixadc_sslcipher" "Securesslcipher" {
 
 }
 resource "citrixadc_ssldhparam" "SecureDH" {
-    dhfile = "/nsconfig/ssl/SecureDH"
-    bits   = "2048"
-    gen    = "5"
+  dhfile = "/nsconfig/ssl/SecureDH"
+  bits   = "2048"
+  gen    = "5"
 }
 resource "citrixadc_sslprofile" "Secure_sslprofile" {
-  depends_on = [ citrixadc_sslcipher.Securesslcipher,citrixadc_ssldhparam.SecureDH ]
-  name = "Secure_sslprofile"
-  ssl3   = "DISABLED"
-  tls1   = "DISABLED"
-  tls11   = "DISABLED"
-  tls12   = "ENABLED"
-  tls13   = "ENABLED"
-  snienable = "ENABLED"
-  dh = "ENABLED"
-  dhfile = "/nsconfig/ssl/SecureDH"
-  hsts = "ENABLED"
-  maxage = 4294967294
-  denysslreneg = "NONSECURE"
-  ecccurvebindings = ["P_224","P_256","P_384","P_521"]
+  depends_on       = [citrixadc_sslcipher.Securesslcipher, citrixadc_ssldhparam.SecureDH]
+  name             = "Secure_sslprofile"
+  ssl3             = "DISABLED"
+  tls1             = "DISABLED"
+  tls11            = "DISABLED"
+  tls12            = "ENABLED"
+  tls13            = "ENABLED"
+  snienable        = "ENABLED"
+  dh               = "ENABLED"
+  dhfile           = "/nsconfig/ssl/SecureDH"
+  hsts             = "ENABLED"
+  maxage           = 4294967294
+  denysslreneg     = "NONSECURE"
+  ecccurvebindings = ["P_224", "P_256", "P_384", "P_521"]
   cipherbindings {
     ciphername     = "Securesslcipher"
     cipherpriority = 1
-}
+  }
 }
 resource "citrixadc_systemfile" "CertandKeyUpload" {
-    for_each = { for u in var.CertandKeyUpload : u.filename => u}
-    filename = each.key
-    filelocation = "/nsconfig/ssl"
-    filecontent = file(each.value.filecontent)
+  for_each     = { for u in var.CertandKeyUpload : u.filename => u }
+  filename     = each.key
+  filelocation = "/nsconfig/ssl"
+  filecontent  = file(each.value.filecontent)
 }
 resource "citrixadc_sslcertkey" "Certificates" {
-    for_each = { for u in var.Certificates : u.certkey => u}
-      certkey = each.key
-      cert = each.value.cert
-      key = each.value.key
-      notificationperiod = 30
-      expirymonitor      = "ENABLED"
-      linkcertkeyname = each.value.linkcertkeyname
-      depends_on = [ citrixadc_systemfile.CertandKeyUpload ]
+  for_each           = { for u in var.Certificates : u.certkey => u }
+  certkey            = each.key
+  cert               = each.value.cert
+  key                = each.value.key
+  notificationperiod = 30
+  expirymonitor      = "ENABLED"
+  linkcertkeyname    = each.value.linkcertkeyname
+  depends_on         = [citrixadc_systemfile.CertandKeyUpload]
 }
 resource "citrixadc_sslvserver_sslcertkey_binding" "SSLbinding" {
-    for_each = { for u in var.SSLbinding : u.order => u}
-      vservername = each.value.vservername
-      certkeyname = each.value.certkeyname
-      snicert     = each.value.snicert
-      depends_on = [ citrixadc_sslcertkey.Certificates, citrixadc_lbvserver.lb_vservers, citrixadc_csvserver.CSW_vservers ]
+  for_each    = { for u in var.SSLbinding : u.order => u }
+  vservername = each.value.vservername
+  certkeyname = each.value.certkeyname
+  snicert     = each.value.snicert
+  depends_on  = [citrixadc_sslcertkey.Certificates, citrixadc_lbvserver.lb_vservers, citrixadc_csvserver.CSW_vservers]
 }

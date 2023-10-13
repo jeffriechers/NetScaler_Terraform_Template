@@ -1,5 +1,5 @@
 variable "password" {
-  description = "Netscaler Login Password"
+  description = "Netscaler Password"
   type        = string
   sensitive   = true
 }
@@ -17,6 +17,7 @@ variable "static_routes" {
   }))
   default = [
     #{ network = "", netmask = "", gateway = "" },
+    { network = "10.254.0.0", netmask = "255.255.0.0", gateway = "10.0.0.1" },
   ]
 }
 variable "lb_services" {
@@ -29,6 +30,11 @@ variable "lb_services" {
   }))
   default = [
     #{ name = "", port = "", ip = "", servicetype = "", lbvserver = "" },
+    { name = "home-dc1.home.lab_636", port = "636", ip = "10.0.0.3", servicetype = "TCP", lbvserver = "LB_LDAPS" },
+    { name = "home-dc1.home.lab_389", port = "389", ip = "10.0.0.3", servicetype = "TCP", lbvserver = "LB_LDAP" },
+    { name = "home-ddcsf.home.lab_443", port = "443", ip = "10.0.0.100", servicetype = "SSL", lbvserver = "LB_Director" },
+    { name = "WEM.home.lab_444", port = "444", ip = "10.0.0.99", servicetype = "SSL", lbvserver = "LB_WEM" },
+    { name = "studio.home.lab_443", port = "443", ip = "10.0.0.99", servicetype = "SSL", lbvserver = "LB_Studio" },
   ]
 }
 variable "lb_vservers" {
@@ -42,6 +48,11 @@ variable "lb_vservers" {
   }))
   default = [
     #{ name = "", port = "", ipv46 = "", servicetype = "", sslprofile = "", lbmethod = "" },
+    { name = "LB_LDAPS", port = "636", ipv46 = "10.0.0.81", servicetype = "TCP", sslprofile = "", lbmethod = "" },
+    { name = "LB_LDAP", port = "389", ipv46 = "10.0.0.81", servicetype = "TCP", sslprofile = "", lbmethod = "" },
+    { name = "LB_Director", port = "0", ipv46 = "0.0.0.0", servicetype = "SSL", sslprofile = "Secure_sslprofile", lbmethod = "" },
+    { name = "LB_WEM", port = "0", ipv46 = "0.0.0.0", servicetype = "SSL", sslprofile = "Secure_sslprofile", lbmethod = "" },
+    { name = "LB_Studio", port = "0", ipv46 = "0.0.0.0", servicetype = "SSL", sslprofile = "Secure_sslprofile", lbmethod = "" },
   ]
 }
 variable "CSW_vservers" {
@@ -54,6 +65,8 @@ variable "CSW_vservers" {
   }))
   default = [
     #{ name = "", port = "", ipv46 = "", servicetype = "", sslprofile = ""},
+    { name = "CSW_Home_443", port = "443", ipv46 = "10.0.0.80", servicetype = "SSL", sslprofile = "Secure_sslprofile" },
+    { name = "CSW_Home_80", port = "80", ipv46 = "10.0.0.80", servicetype = "HTTP", sslprofile = "" },
   ]
 }
 variable "CSW_cspolicy" {
@@ -63,9 +76,13 @@ variable "CSW_cspolicy" {
   }))
   default = [
     #{ policyname = "", rule = ""},
+    { policyname = "Director", rule = "HTTP.REQ.HOSTNAME.CONTAINS(\"director.home.lab\")" },
+    { policyname = "WEM", rule = "HTTP.REQ.HOSTNAME.CONTAINS(\"wem.home.lab\")" },
+    { policyname = "Studio", rule = "HTTP.REQ.HOSTNAME.CONTAINS(\"studio.home.lab\")" },
   ]
 }
 variable "CSW_policybind" {
+
   type = list(object({
     name            = string
     policyname      = string
@@ -74,6 +91,9 @@ variable "CSW_policybind" {
   }))
   default = [
     #{ name = "", policyname = "", priority = "", targetlbvserver = ""},
+    { name = "CSW_Home_443", policyname = "Director", priority = "100", targetlbvserver = "LB_Director" },
+    { name = "CSW_Home_443", policyname = "WEM", priority = "110", targetlbvserver = "LB_WEM" },
+    { name = "CSW_Home_443", policyname = "Studio", priority = "120", targetlbvserver = "LB_Studio" },
   ]
 }
 variable "Responder_Action" {
@@ -83,7 +103,8 @@ variable "Responder_Action" {
     target = string
   }))
   default = [
-    #{ name = "", type = "", target = ""},    
+    #{ name = "", type = "", target = ""},
+    { name = "HTTPtoHTTPS_responderaction", type = "redirect", target = "\"https://\"+HTTP.REQ.HEADER(\"Host\").HTTP_HEADER_SAFE+HTTP.REQ.URL.PATH_AND_QUERY.HTTP_URL_SAFE" },
   ]
 }
 variable "Responder_Policy" {
@@ -94,6 +115,7 @@ variable "Responder_Policy" {
   }))
   default = [
     #{ name = "", action = "", rule = ""},
+    { name = "HTTPS_responderpolicy", action = "HTTPtoHTTPS_responderaction", rule = "true" },
   ]
 }
 variable "CSW_responderbinding" {
@@ -106,6 +128,7 @@ variable "CSW_responderbinding" {
   }))
   default = [
     #{ name = "", policyname = "", priority = "", gotopriorityexpression = "", bindpoint = ""},
+    { name = "CSW_Home_80", policyname = "HTTPS_responderpolicy", priority = "100", gotopriorityexpression = "END", bindpoint = "REQUEST" },
   ]
 }
 variable "CSW_VPNpolicybind" {
@@ -115,6 +138,7 @@ variable "CSW_VPNpolicybind" {
   }))
   default = [
     #{ name = "", vserver = ""},
+    { name = "External_CSW_Home_443", vserver = "VPN_GW" },
   ]
 }
 variable "ldap_action" {
@@ -129,6 +153,8 @@ variable "ldap_action" {
   }))
   default = [
     #{ name = "", serverip = "", serverport = "", defaultauthenticationgroup = "", ldapbase = "", ldapbinddn = "", searchfilter = ""},
+    { name = "Netscaler_Admin_LDAP", serverip = "10.0.0.81", serverport = "636", defaultauthenticationgroup = "NetScaler_Admins", ldapbase = "dc=home,dc=lab", ldapbinddn = "administrator@home.lab", searchfilter = "memberOf=CN=Domain Admins,CN=Users,DC=HOME,DC=LAB" },
+    { name = "Users_LDAP", serverip = "10.0.0.81", serverport = "636", defaultauthenticationgroup = "", ldapbase = "dc=home,dc=lab", ldapbinddn = "administrator@home.lab", searchfilter = "" },
   ]
 }
 variable "Authentication_Policy" {
@@ -139,6 +165,8 @@ variable "Authentication_Policy" {
   }))
   default = [
     #{ name = "", rule = "", action = ""},
+    { name = "NetScaler_Admin_LDAP_Policy", rule = "true", action = "Netscaler_Admin_LDAP" },
+    { name = "Users_LDAP_Policy", rule = "true", action = "Users_LDAP" },
   ]
 }
 variable "Global_Auth_Binding" { # This binding is for login to NetScaler, not for logging into AAA or VPN sites.
@@ -148,6 +176,7 @@ variable "Global_Auth_Binding" { # This binding is for login to NetScaler, not f
   }))
   default = [
     #{ policyname = "", priority = ""},
+    { policyname = "NetScaler_Admin_LDAP_Policy", priority = "100" },
   ]
 }
 variable "AAA_vservers" {
@@ -158,6 +187,7 @@ variable "AAA_vservers" {
   }))
   default = [
     #{ name = "", ipv46 = "", port = ""},
+    { name = "Users_LDAP_AAA_VS", ipv46 = "", port = "0" },
   ]
 }
 variable "AAA_User_Bind" {
@@ -168,6 +198,7 @@ variable "AAA_User_Bind" {
   }))
   default = [
     #{ name = "", policy = "", priority = ""},
+    { name = "Users_LDAP_AAA_VS", policy = "Users_LDAP_Policy", priority = "100" },
   ]
 }
 variable "AuthenticationProfile" {
@@ -177,6 +208,7 @@ variable "AuthenticationProfile" {
   }))
   default = [
     #{ name = "", authnvsname = ""},
+    { name = "Users_LDAP_AuthProfile", authnvsname = "Users_LDAP_AAA_VS" },
   ]
 }
 variable "CertandKeyUpload" {
@@ -185,7 +217,18 @@ variable "CertandKeyUpload" {
     filecontent = string # Place the name of the file to upload after the ./Certificates/ entry.
   }))
   default = [
-    #{ filename = "", filecontent ="./Certificates/"},
+    #{ filename = "", filecontent = ""},
+    { filename = "HomeWildcard.pem", filecontent = "./Certificates/HomeWildcard.pem" },
+    { filename = "ISRG.cer", filecontent = "./Certificates/ISRG.cer" },
+    { filename = "R3Intermediate.cer", filecontent = "./Certificates/R3Intermediate.cer" },
+    { filename = "vpncert.cer", filecontent = "./Certificates/vpncert.cer" },
+    { filename = "vpncert.key", filecontent = "./Certificates/vpncert.key" },
+    { filename = "10cert.cer", filecontent = "./Certificates/10cert.cer" },
+    { filename = "10cert.key", filecontent = "./Certificates/10cert.key" },
+    { filename = "HomeRoot.crt", filecontent = "./Certificates/HomeRoot.crt" },
+    { filename = "cvlab.cer", filecontent = "./Certificates/cvlab.cer" },
+    { filename = "cvlab.key", filecontent = "./Certificates/cvlab.key" },
+
   ]
 }
 variable "Certificates" {
@@ -197,6 +240,13 @@ variable "Certificates" {
   }))
   default = [
     #{ certkey = "", cert = "", key = "", linkcertkeyname = ""},
+    { certkey = "Home_Wildcard", cert = "HomeWildcard.pem", key = "HomeWildcard.pem", linkcertkeyname = "Home_Root" },
+    { certkey = "CVLAB_Wildcard", cert = "cvlab.cer", key = "cvlab.key", linkcertkeyname = "R3Intermediate" },
+    { certkey = "10min_Wildcard", cert = "10cert.cer", key = "10cert.key", linkcertkeyname = "R3Intermediate" },
+    { certkey = "VPN_Wildcard", cert = "vpncert.cer", key = "vpncert.key", linkcertkeyname = "R3Intermediate" },
+    { certkey = "R3Intermediate", cert = "R3Intermediate.cer", key = "", linkcertkeyname = "ISRG" },
+    { certkey = "ISRG", cert = "ISRG.cer", key = "", linkcertkeyname = "" },
+    { certkey = "Home_Root", cert = "HomeRoot.crt", key = "", linkcertkeyname = "" },
   ]
 }
 variable "SSLbinding" {
@@ -204,10 +254,18 @@ variable "SSLbinding" {
     order       = string # Required to prevent name collisions with SNI Certs Just create a unique ascending number for each entry.
     vservername = string
     certkeyname = string
-    snicert     = string # Must be either true or false
+    snicert     = string # must be true or false
   }))
   default = [
-    #{ order = "",vservername = "", certkeyname = "", snicert = ""},
+    #{ vservername = "", certkeyname = "", snicert = ""},
+    { order = "1", vservername = "CSW_Home_443", certkeyname = "Home_Wildcard", snicert = "true" },
+    { order = "2", vservername = "CSW_Home_443", certkeyname = "VPN_Wildcard", snicert = "true" },
+    { order = "3", vservername = "CSW_Home_443", certkeyname = "CVLAB_Wildcard", snicert = "true" },
+    { order = "4", vservername = "LB_Studio", certkeyname = "Home_Wildcard", snicert = "false" },
+    { order = "5", vservername = "LB_WEM", certkeyname = "Home_Wildcard", snicert = "false" },
+    { order = "6", vservername = "LB_Director", certkeyname = "Home_Wildcard", snicert = "false" },
+    { order = "7", vservername = "VPN_GW", certkeyname = "CVLAB_Wildcard", snicert = "false" },
+    { order = "8", vservername = "Users_LDAP_AAA_VS", certkeyname = "Home_Wildcard", snicert = "false" },
   ]
 }
 variable "STA_bind" {
@@ -216,6 +274,7 @@ variable "STA_bind" {
   }))
   default = [
     #{ staserver = ""},
+    { staserver = "http://10.0.0.100" },
   ]
 }
 variable "VPN_SessionActions" {
@@ -225,6 +284,8 @@ variable "VPN_SessionActions" {
   }))
   default = [
     #{ name = "", wihome = ""},
+    { name = "VPN_Native_Action", wihome = "http://10.0.0.100/Citrix/Store" },
+    { name = "VPN_Web_Action", wihome = "http://10.0.0.100/Citrix/StoreWeb/" },
   ]
 }
 variable "VPN_SessionPolicy" {
@@ -235,6 +296,8 @@ variable "VPN_SessionPolicy" {
   }))
   default = [
     #{ name = "", rule = "", action = ""},
+    { name = "VPN_Native_Policy", rule = "HTTP.REQ.HEADER(\"User-Agent\").CONTAINS(\"CitrixReceiver\")", action = "VPN_Native_Action" },
+    { name = "VPN_Web_Policy", rule = "HTTP.REQ.HEADER(\"User-Agent\").CONTAINS(\"CitrixReceiver\").NOT", action = "VPN_Web_Action" },
   ]
 }
 variable "VPN_Vserver" {
@@ -247,6 +310,7 @@ variable "VPN_Vserver" {
   }))
   default = [
     #{ name = "", authnprofile = "", icaonly = "", ipv46 = "", port = "443"},
+    { name = "VPN_GW", authnprofile = "Users_LDAP_AuthProfile", icaonly = "OFF", ipv46 = "", port = "0" },
   ]
 }
 variable "VPN_SessionBind" {
@@ -257,6 +321,8 @@ variable "VPN_SessionBind" {
   }))
   default = [
     #{ name = "", policy = "", priority = ""},
+    { name = "VPN_GW", policy = "VPN_Native_Policy", priority = "100" },
+    { name = "VPN_GW", policy = "VPN_Web_Policy", priority = "110" },
   ]
 }
 variable "ADNS_Services" {
@@ -267,6 +333,8 @@ variable "ADNS_Services" {
   }))
   default = [
     #{ name = "", ip = "", servicetype = ""},
+    { name = "ADNS", ip = "192.168.0.73", servicetype = "ADNS" },
+    { name = "ADNS_TCP", ip = "192.168.0.73", servicetype = "ADNS_TCP" },
   ]
 }
 variable "SOA" {
@@ -277,6 +345,7 @@ variable "SOA" {
   }))
   default = [
     #{ domain = "", originserver = "", contact = ""},
+    { domain = "gslb.cvlab.website", originserver = "cvlab.website", contact = "postmaster.cvlab.website" },
   ]
 }
 variable "RootRecord" {
@@ -286,6 +355,9 @@ variable "RootRecord" {
   }))
   default = [
     #{ domain = "", nameserver = ""},
+    { domain = ".", nameserver = "gslb.cvlab.website" },
+    { domain = "gslb.cvlab.website", nameserver = "ns1.cvlab.website" },
+    { domain = "gslb.cvlab.website", nameserver = "ns2.cvlab.website" },
   ]
 }
 variable "dnszone" {
@@ -294,6 +366,7 @@ variable "dnszone" {
   }))
   default = [
     #{ zonename = ""},
+    { zonename = "gslb.cvlab.website" },
   ]
 }
 variable "GSLB_Site" {
@@ -305,6 +378,8 @@ variable "GSLB_Site" {
   }))
   default = [
     #{ sitename = "", siteipaddress = "", publicip = "", sitetype = ""},
+    { sitename = "DC1", siteipaddress = "192.168.0.73", publicip = "2.2.21.11", sitetype = "LOCAL" },
+    { sitename = "DC2", siteipaddress = "10.254.1.200", publicip = "1.1.5.214", sitetype = "REMOTE" },
   ]
 }
 variable "GSLB_Service" {
@@ -317,6 +392,10 @@ variable "GSLB_Service" {
   }))
   default = [
     #{ ip = "", port = "", servicename = "", servicetype = "", sitename = ""},
+    { ip = "10.0.0.80", port = "80", servicename = "CSW_Home_80", servicetype = "HTTP", sitename = "DC1" },
+    { ip = "10.254.1.201", port = "80", servicename = "CSW_DC2_80", servicetype = "HTTP", sitename = "DC2" },
+    { ip = "10.0.0.80", port = "443", servicename = "CSW_Home_443", servicetype = "SSL", sitename = "DC1" },
+    { ip = "10.254.1.201", port = "443", servicename = "CSW_DC2_443", servicetype = "SSL", sitename = "DC2" },
   ]
 }
 variable "GSLB_vserver" {
@@ -331,6 +410,7 @@ variable "GSLB_vserver" {
   }))
   default = [
     #{ name = "", servicetype = "", domainname = "", DC1servicename = "", DC1weight = "", DC2servicename = "", DC2weight = ""},
+    { name = "GSLB_VS_CSW", servicetype = "HTTP", domainname = "director.gslb.cvlab.website", DC1servicename = "CSW_Home_80", DC1weight = "100", DC2servicename = "CSW_DC2_80", DC2weight = "100" },
   ]
 }
 variable "GSLB_DNSView" {
@@ -339,6 +419,7 @@ variable "GSLB_DNSView" {
   }))
   default = [
     #{ viewname = ""},
+    { viewname = "HomeInternal" },
   ]
 }
 variable "DNSAction" {
@@ -349,6 +430,7 @@ variable "DNSAction" {
   }))
   default = [
     #{ actionname = "",actiontype = "", viewname = ""},
+    { actionname = "HomeInternal", actiontype = "ViewName", viewname = "HomeInternal" },
   ]
 }
 variable "DNSPolicy" {
@@ -359,6 +441,7 @@ variable "DNSPolicy" {
   }))
   default = [
     #{name = "",rule = "", actionname = ""},
+    { name = "HomeInternal_Policy", rule = "CLIENT.IP.SRC.IN_SUBNET(192.168.0.0/24) || CLIENT.IP.SRC.IN_SUBNET(10.0.0.0/24)", actionname = "HomeInternal" },
   ]
 }
 variable "DNSPolicy_Binding" {
@@ -368,5 +451,6 @@ variable "DNSPolicy_Binding" {
   }))
   default = [
     #{policyname = "",priority = ""},        
+    { policyname = "HomeInternal_Policy", priority = "10" },
   ]
 }
