@@ -75,6 +75,36 @@ resource "citrixadc_gslbvserver" "GSLB_vserver" {
   }
   depends_on = [citrixadc_gslbsite.GSLB_Site, citrixadc_gslbservice.GSLB_Service]
 }
+resource "citrixadc_gslbvserver" "DC1_GSLB_vserver" {
+  for_each      = { for u in var.DC1_GSLB_vserver : u.name => u }
+  dnsrecordtype = "A"
+  name          = each.key
+  servicetype   = each.value.servicetype
+  domain {
+    domainname = each.value.domainname
+    ttl        = "60"
+  }
+  service {
+    servicename = each.value.DC1servicename
+    weight      = each.value.DC1weight
+  }
+  depends_on = [citrixadc_gslbsite.GSLB_Site, citrixadc_gslbservice.GSLB_Service]
+}
+resource "citrixadc_gslbvserver" "DC2_GSLB_vserver" {
+  for_each      = { for u in var.DC2_GSLB_vserver : u.name => u }
+  dnsrecordtype = "A"
+  name          = each.key
+  servicetype   = each.value.servicetype
+  domain {
+    domainname = each.value.domainname
+    ttl        = "60"
+  }
+  service {
+    servicename = each.value.DC2servicename
+    weight      = each.value.DC2weight
+  }
+  depends_on = [citrixadc_gslbsite.GSLB_Site, citrixadc_gslbservice.GSLB_Service]
+}
 resource "citrixadc_dnsview" "GSLB_DNSView" {
   for_each = { for u in var.GSLB_DNSView : u.viewname => u }
   viewname = each.key
@@ -99,4 +129,11 @@ resource "citrixadc_dnsglobal_dnspolicy_binding" "DNSPolicy_Binding" {
   priority   = each.value.priority
   type       = "REQ_DEFAULT"
   depends_on = [citrixadc_dnspolicy.DNSPolicy]
+}
+resource "citrixadc_gslbservice_dnsview_binding" "GSLB_DNSView_Binding" {
+  for_each   = { for u in var.GSLB_DNSView_Binding : u.servicename=> u }
+  servicename = each.key
+  viewname    = each.value.viewname
+  viewip      = each.value.viewip
+  depends_on = [citrixadc_dnsview.GSLB_DNSView, citrixadc_gslbservice.GSLB_Service, citrixadc_dnspolicy.DNSPolicy]
 }

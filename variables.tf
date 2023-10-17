@@ -333,6 +333,30 @@ variable "GSLB_vserver" {
     #{ name = "", servicetype = "", domainname = "", DC1servicename = "", DC1weight = "", DC2servicename = "", DC2weight = ""},
   ]
 }
+variable "DC1_GSLB_vserver" {
+  type = list(object({
+    name           = string
+    servicetype    = string
+    domainname     = string
+    DC1servicename = string
+    DC1weight      = string
+  }))
+  default = [
+    #{ name = "", servicetype = "", domainname = "", DC1servicename = "", DC1weight = ""},
+  ]
+}
+variable "DC2_GSLB_vserver" {
+  type = list(object({
+    name           = string
+    servicetype    = string
+    domainname     = string
+    DC2servicename = string
+    DC2weight      = string
+  }))
+  default = [
+    #{ name = "", servicetype = "", domainname = "", DC2servicename = "", DC2weight = ""},
+  ]
+}
 variable "GSLB_DNSView" {
   type = list(object({
     viewname = string
@@ -368,5 +392,15 @@ variable "DNSPolicy_Binding" {
   }))
   default = [
     #{policyname = "",priority = ""},        
+  ]
+}
+variable "GSLB_DNSView_Binding" {
+  type = list(object({
+    servicename = string
+    viewname    = string
+    viewip      = string
+  }))
+  default = [
+    #{servicename = "", viewname = "", viewip =""},
   ]
 }
