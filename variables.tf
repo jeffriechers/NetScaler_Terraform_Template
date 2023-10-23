@@ -8,7 +8,16 @@ variable "ldappassword" {
   type        = string
   sensitive   = true
 }
-
+variable "Additional_SNIPs" {
+  type = list(object({
+    ipaddress  = string
+    netmask    = string
+    mgmtaccess = string # Value is either ENABLED or DISABLED
+  }))
+  default = [
+    #{ ipaddress = "", netmask = "", mgmtaccess = ""}
+  ]
+}
 variable "static_routes" {
   type = list(object({
     network = string

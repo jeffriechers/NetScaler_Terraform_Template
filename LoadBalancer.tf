@@ -8,7 +8,6 @@ resource "citrixadc_service" "lb_services" {
   lbvserver   = each.value.lbvserver
   depends_on  = [citrixadc_lbvserver.lb_vservers]
 }
-
 #LoadBalancers
 resource "citrixadc_lbvserver" "lb_vservers" {
   for_each    = { for u in var.lb_vservers : u.name => u }
