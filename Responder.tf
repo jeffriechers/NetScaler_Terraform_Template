@@ -37,3 +37,12 @@ resource "citrixadc_csvserver_responderpolicy_binding" "CSW_responderbinding" {
   bindpoint              = each.value.bindpoint
   depends_on             = [citrixadc_responderpolicy.Responder_Policy]
 }
+#Load Balancers Responder Policies
+resource "citrixadc_lbvserver_responderpolicy_binding" "LB_vserver_responder_binding" {
+  for_each   = { for u in var.LB_vserver_responder_binding : u.order => u }
+  name       = each.value.name
+  policyname = each.value.policyname
+  priority   = each.value.priority
+  bindpoint  = "REQUEST"
+  depends_on             = [citrixadc_responderpolicy.Responder_Policy]
+}

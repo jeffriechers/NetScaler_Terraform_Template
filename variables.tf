@@ -126,6 +126,17 @@ variable "CSW_VPNpolicybind" {
     #{ name = "", vserver = ""},
   ]
 }
+variable "LB_vserver_responder_binding" {
+  type = list(object({
+    order      = string
+    name       = string
+    policyname = string
+    priority   = string
+  }))
+  default = [
+    #{order = "", name = "", policyname = "", priority = ""},  
+  ]
+}
 variable "ldap_action" {
   type = list(object({
     name                       = string
