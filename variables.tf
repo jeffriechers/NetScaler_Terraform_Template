@@ -137,6 +137,20 @@ variable "LB_vserver_responder_binding" {
     #{order = "", name = "", policyname = "", priority = ""},  
   ]
 }
+variable "saml_action" {
+  type = list(object({
+  name                    = string
+  metadataurl             = string
+  samltwofactor           = string
+  requestedauthncontext   = string
+  digestmethod            = string
+  signaturealg            = string
+  metadatarefreshinterval = string
+  }))
+  default = [
+# {  name = "", metadataurl = "", samltwofactor = "", requestedauthncontext = "", digestmethod = "", signaturealg = "", metadatarefreshinterval = ""},
+  ]
+}  
 variable "ldap_action" {
   type = list(object({
     name                       = string

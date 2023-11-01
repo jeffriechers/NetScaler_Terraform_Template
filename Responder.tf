@@ -44,5 +44,5 @@ resource "citrixadc_lbvserver_responderpolicy_binding" "LB_vserver_responder_bin
   policyname = each.value.policyname
   priority   = each.value.priority
   bindpoint  = "REQUEST"
-  depends_on             = [citrixadc_responderpolicy.Responder_Policy]
+  depends_on = [citrixadc_responderpolicy.Responder_Policy]
 }

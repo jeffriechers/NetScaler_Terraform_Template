@@ -91,5 +91,5 @@ resource "citrixadc_locationfile" "NS_LocationFile" {
 resource "citrixadc_nsconfig_save" "tf_ns_save" {
   all        = true
   timestamp  = timestamp()
-  depends_on = [citrixadc_sslcertkey.Certificates, citrixadc_lbvserver.lb_vservers, citrixadc_sslvserver_sslcertkey_binding.SSLbinding, citrixadc_gslbvserver.GSLB_vserver, citrixadc_sslvserver.vpn_sslvserver, citrixadc_csvserver.CSW_vservers]
+  depends_on = [citrixadc_dnsview.GSLB_DNSView, citrixadc_dnsaction.DNSAction, citrixadc_sslcertkey.Certificates, citrixadc_lbvserver.lb_vservers, citrixadc_sslvserver_sslcertkey_binding.SSLbinding, citrixadc_gslbvserver.GSLB_vserver, citrixadc_sslvserver.vpn_sslvserver, citrixadc_csvserver.CSW_vservers]
 }

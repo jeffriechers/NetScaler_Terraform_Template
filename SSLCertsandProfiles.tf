@@ -71,6 +71,7 @@ resource "citrixadc_sslprofile" "Secure_sslprofile" {
   hsts             = "ENABLED"
   maxage           = 4294967294
   denysslreneg     = "NONSECURE"
+  ocspstapling     = "ENABLED"
   ecccurvebindings = ["P_224", "P_256", "P_384", "P_521"]
   cipherbindings {
     ciphername     = "Securesslcipher"

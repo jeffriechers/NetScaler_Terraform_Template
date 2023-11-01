@@ -6,6 +6,17 @@ resource "citrixadc_systemgroup" "NetScaler_Admins_systemgroup" {
     priority   = 100
   }
 }
+# SAML Actions
+resource "citrixadc_authenticationsamlaction" "saml_action" {
+    for_each                   = { for u in var.saml_action : u.name => u }
+  name                    = each.key
+  metadataurl             = each.value.metadataurl
+  samltwofactor           = each.value.samltwofactor
+  requestedauthncontext   = each.value.requestedauthncontext
+  digestmethod            = each.value.digestmethod
+  signaturealg            = each.value.signaturealg
+  metadatarefreshinterval = each.value.metadatarefreshinterval
+}
 # LDAP Actions
 resource "citrixadc_authenticationldapaction" "ldap_action" {
   for_each                   = { for u in var.ldap_action : u.name => u }
