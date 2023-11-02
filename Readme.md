@@ -50,6 +50,10 @@ Clone this repository locally.  I recommend Visual Studio Code with the Terrafor
 8. After your configuration is deployed, you now can setup High Availability for your NetScaler pair.  Make sure to setup the STAYPRIMARY and STAYSECONDARY on the nodes before linking them to keep the unit with the config from being overwritten with null data.
 
 ## WHATS NEW
+11-01-2023
+- Added SAML configuration that has been tested with Azure AD
+- Modified GSLB configuration for environments that only host items in a single DC
+
 10-13-2023
 - Added DNS Views for shared GSLB for inside and outside on the same NetScaler
 
@@ -69,9 +73,8 @@ Clone this repository locally.  I recommend Visual Studio Code with the Terrafor
 
 If you do a terraform apply -destroy, the Diffie Hellman key is not removed, so you need to manually delete the file from /nsconfig/ssl/SecureDH.  You can do this via putty, winscp, or from the browser gui under Trafic Management->SSL->Manage Certificates / Keys / CSRs
 
-Load Balancer Services cannot be bound with the new Order setting.  I have a ticket open with the owner of the CitrixADC provider, and they are adding this feature.  For now you can modify the binding manually from the gui.
+GSLB Services cannot be bound with the new Order setting.  I have a ticket open with the owner of the CitrixADC provider, and they are adding this feature.  For now you can modify the binding manually from the gui.  1.37.0 provides support for Order binding on regular load balancing vservers.
 
-I am seeing an issue with SOA record creation during the first time run of a terraform apply.  But running it a second time works fine.  This could be an issue with my environment, or 14.1 Build 8.
 
 ## TO DO LIST
 
@@ -80,10 +83,9 @@ I am seeing an issue with SOA record creation during the first time run of a ter
     - Currently you need to clone the Directory and configure it seperately
 - Change some of the initial prompting, so that if you aren't using LDAP it won't prompt
 - Add additional authentication methods
-    - Currently just LDAP is support
-    - SAML configuration needed
+    - NetScaler OTP needed
     - Radius configuration needed
     - Certificate based authentication configuration needed
-    - nFactor login tree for multi-authentication needed
+    - nFactor login tree for multi-authentication needed (coming soon)
 - Programmatically setup HA configuration.
 - Setting up GSLB SNIP to get management access for config sync
