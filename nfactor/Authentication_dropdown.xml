@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?><AuthenticateResponse xmlns="http://citrix.com/authentication/response/1">
+<Status>success</Status>
+<Result>more-info</Result>
+<StateContext/>
+<AuthenticationRequirements>
+<PostBack>/nf/auth/doAuthentication.do</PostBack>
+<CancelPostBack>/nf/auth/doLogoff.do</CancelPostBack>
+<CancelButtonText>Cancel</CancelButtonText>
+<Requirements>
+<Requirement><Credential><ID>domain</ID><Type>none</Type></Credential><Label><Type>none</Type></Label><Input><ComboBox><InitialSelection>unspecified</InitialSelection><DisplayValues><DisplayValue><Display>Authentication_Choice_Selection</Display><Value>unspecified</Value></DisplayValue><DisplayValue><Display>Authentication_Choice_LDAP</Display><Value>Authentication_Choice_LDAP</Value></DisplayValue><DisplayValue><Display>Authentication_Choice_SAML</Display><Value>Authentication_Choice_SAML</Value></DisplayValue><DisplayValue><Display>Authentication_Choice_OTP</Display><Value>Authentication_Choice_OTP</Value></DisplayValue><DisplayValue><Display>Authentication_Choice_Google</Display><Value>Authentication_Choice_Google</Value></DisplayValue><DisplayValue><Display>Authentication_Choice_Okta</Display><Value>Authentication_Choice_Okta</Value></DisplayValue></DisplayValues></ComboBox></Input></Requirement>
+<Requirement><Credential><Type>none</Type></Credential><Label><Text>Authentication_Choice_text</Text><Type>nsg_confirmation</Type></Label><Input/></Requirement>
+<Requirement><Credential><ID>loginBtn</ID><Type>none</Type></Credential><Label><Type>none</Type></Label><Input><Button>Authentication_Choice_Logon</Button></Input></Requirement>
+</Requirements>
+</AuthenticationRequirements>
+</AuthenticateResponse>

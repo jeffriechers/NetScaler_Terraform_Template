@@ -3,6 +3,9 @@ terraform {
     citrixadc = {
       source = "citrix/citrixadc"
     }
+    #     ssh = {
+    #   source = "loafoe/ssh"
+    # }
   }
 }
 provider "citrixadc" {

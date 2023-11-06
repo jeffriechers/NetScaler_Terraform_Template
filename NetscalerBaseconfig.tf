@@ -87,6 +87,10 @@ resource "citrixadc_locationfile" "NS_LocationFile" {
   locationfile = "/var/netscaler/inbuilt_db/Citrix_Netscaler_InBuilt_GeoIP_DB_IPv4"
   format       = "netscaler"
 }
+resource "citrixadc_locationfile6" "NS_LocationFile6" {
+  locationfile = "/var/netscaler/inbuilt_db/Citrix_Netscaler_InBuilt_GeoIP_DB_IPv6"
+  format       = "netscaler6"
+}
 #Save NS Config
 resource "citrixadc_nsconfig_save" "tf_ns_save" {
   all        = true

@@ -48,8 +48,16 @@ Clone this repository locally.  I recommend Visual Studio Code with the Terrafor
     - Besides login prompts the apply will ask you to confirm that you are modifying configuration
 7. When you run the apply it will save the configuration at the end of the run.  However, if in your environment you see a configuration being deployed after the save command executes, let me know what the process was so I can modify the configuration.
 8. After your configuration is deployed, you now can setup High Availability for your NetScaler pair.  Make sure to setup the STAYPRIMARY and STAYSECONDARY on the nodes before linking them to keep the unit with the config from being overwritten with null data.
+9. Occassionally Terraform will add entries out of order from my testing.  So if you get any errors about missing items, just rerun the Apply and it should work.  If it continues to fail, check your syntax.
+10. With the SSH engine I use to create the rc.netscaler file for fixing SAML subject issues with Azure it will give a timeout error message.  But do not worry, the system has created the file and set the appropriate permissions.  I have a support request in with the provider for a potential fix.  If you are modifying the rc.netscaler, make sure to reboot the NetScaler to get those settigs to take effect.
 
 ## WHATS NEW
+11-06-2023
+- Added OAuth configuration for Gmail.com authenticaion
+- Created an nfactor workflow for selecting an authentication method.  This is for demo labs to try different authentication methods, and as an example for building your own nFactor workflows.
+- Added ssh provider for executing commands directly on the NetScaler.  This is commented out by default in the provider.tf and ssh.tf.
+- Added additional documentation in the variables.tf for better explanation of sections and variables
+
 11-01-2023
 - Added SAML configuration that has been tested with Azure AD
 - Modified GSLB configuration for environments that only host items in a single DC
@@ -78,14 +86,11 @@ GSLB Services cannot be bound with the new Order setting.  I have a ticket open 
 
 ## TO DO LIST
 
-- Create a process to remove the Diffie-Hellman key when you set the variable
 - Setup a method to deploy to multiple datacenters at the same time for GSLB configurations
     - Currently you need to clone the Directory and configure it seperately
 - Change some of the initial prompting, so that if you aren't using LDAP it won't prompt
 - Add additional authentication methods
-    - NetScaler OTP needed
     - Radius configuration needed
     - Certificate based authentication configuration needed
-    - nFactor login tree for multi-authentication needed (coming soon)
 - Programmatically setup HA configuration.
 - Setting up GSLB SNIP to get management access for config sync

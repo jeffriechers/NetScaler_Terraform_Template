@@ -1,0 +1,1 @@
+Place your Certificates and PEM files in this folder.  Do not replicate your project to a public GitHub if you have those files in this folder.
