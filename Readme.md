@@ -23,7 +23,7 @@ When using GSLB, this config will setup replication.  So on the secondary datace
 4. In the initial setup wizard setup the following configuration
     - set the Management SNIP
     - Set Hostname, DNS IP, Timezone, NTP server, and ADM Service settings 
-    - Skip the license configuration, as this requires a reboot for the new nsroot password defined in step 3
+    - Skip the license configuration, as this requires a reboot for the new nsroot password defined in step 3 (This has been fixed in 14.1 and it will reboot before the license installation process)
 5. Reboot
 6. From Browser Gui install your NetScaler license
 7. If using a custom local account instead of nsroot, create it now.
